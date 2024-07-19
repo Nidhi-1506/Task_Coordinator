@@ -12,6 +12,8 @@ const Signin = () => {
 		password: '',
 	});
 
+	const [error, setError] = useState('');
+
 	const handleChange = (e) => {
 		setState({
 			...state,
@@ -19,14 +21,24 @@ const Signin = () => {
 		});
 	};
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
-		dispatch(
-			signin({
-				email: state.email,
-				password: state.password,
-			})
-		);
+		try {
+			const result = await dispatch(
+				signin({
+					email: state.email,
+					password: state.password,
+				})
+			);
+
+			if (signin.rejected.match(result)) {
+				setError(result.payload);
+			} else {
+				setError('');
+			}
+		} catch (err) {
+			setError('An unexpected error occurred.');
+		}
 	};
 
 	return (
@@ -34,6 +46,7 @@ const Signin = () => {
 			<div className='signup-form__wrapper'>
 				<form className='form' onSubmit={handleSubmit}>
 					<h4>Sign In</h4>
+					{error && <div className='error-message'>{error}</div>}
 					<div className='form-group'>
 						<input
 							type='email'

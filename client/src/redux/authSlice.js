@@ -100,5 +100,6 @@ export const signin = (user) => async (dispatch) => {
 		}
 	} catch (error) {
 		dispatch(loginFailure());
+		throw new Error(error.response?.data?.message || 'Login failed');
 	}
 };
